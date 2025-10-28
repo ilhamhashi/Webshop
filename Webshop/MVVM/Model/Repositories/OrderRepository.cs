@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Windows.Controls;
 using Webshop.MVVM.Model.Classes;
 
 namespace Webshop.MVVM.Model.Repositories
@@ -80,8 +81,12 @@ namespace Webshop.MVVM.Model.Repositories
                 command.Parameters.AddWithValue("@OrderStatusId", SqlDbType.Int).Value = entity.OrderStatusId;
                 command.Parameters.AddWithValue("@PaymentMethodId", SqlDbType.Int).Value = entity.PaymentMethodId;
 
+                SqlParameter orderIdParam = new SqlParameter("@OrderId", SqlDbType.Int) { Direction = ParameterDirection.Output };
+                command.Parameters.Add(orderIdParam);
+
                 connection.Open();
                 command.ExecuteNonQuery();
+                entity.OrderId = (int)orderIdParam.Value;
             }
         }
 
