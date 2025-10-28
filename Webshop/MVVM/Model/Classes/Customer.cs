@@ -1,22 +1,37 @@
 ﻿namespace Webshop.MVVM.Model.Classes
 {
-    internal class Customer
+    public class Customer
     {
-        public int Id { get; set; }
-        public int Name { get; set; }
-        public int Phone { get; set; }
+        public int CustomerId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string Email { get; set; }
         public string Address { get; set; }
-        public int PointBalance { get; set; }
+        public string City { get; set; }
+        public string Country { get; set; }
+        public int Points { get; set; }
 
-        public Customer(int id, int name, int phone, string email, string address, int pointBalance)
+        public Customer(int customerId, string firstName, string lastName, string email, string address, string city, string country, int points)
         {
-            Id = id;
-            Name = name;
-            Phone = phone;
+            CustomerId = customerId;
+            FirstName = firstName;
+            LastName = lastName;
             Email = email;
             Address = address;
-            PointBalance = pointBalance;
+            City = city;
+            Country = country;
+            Points = points;
+        }
+
+        public Customer(string firstName, string lastName, string email, string address, string city, string country, int points)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            Email = email;
+            Address = address;
+            City = city;
+            Country = country;
+            Points = points;
         }
     }
 }

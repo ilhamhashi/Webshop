@@ -1,16 +1,19 @@
 ﻿namespace Webshop.MVVM.Model.Classes
 {
-    internal class Category
+    public class Category
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public List<Product> Products { get; set; }
+        public int CategoryId { get; set; }
+        public string CategoryName { get; set; }
 
-        public Category(int id, string name, List<Product> products)
+        public Category(int id, string name)
         {
-            Id = id;
-            Name = name;
-            Products = products;
+            CategoryId = id;
+            CategoryName = name;
+        }
+
+        public Category(string categoryName)
+        {
+            CategoryName = categoryName;
         }
     }
 }

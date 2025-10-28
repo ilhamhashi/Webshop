@@ -1,24 +1,28 @@
 ﻿namespace Webshop.MVVM.Model.Classes
 {
-    internal class Product
+    public class Product
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public int Price { get; set; }
-        public int Stock { get; set; }
-        public string ImagePath { get; set; }
-        public int CategoryID { get; set; }
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+        public int CategoryId { get; set; }
+        public double ProductPrice { get; set; }
+        public int StockQuantity { get; set; }
 
-        public Product(int id, string name, string description, int price, int stock, string imagePath, int categoryID)
+        public Product(int productId, string productName, int categoryId, double productPrice, int stockQuantity)
         {
-            Id = id;
-            Name = name;
-            Description = description;
-            Price = price;
-            Stock = stock;
-            ImagePath = imagePath;
-            CategoryID = categoryID;
+            ProductId = productId;
+            ProductName = productName;
+            CategoryId = categoryId;
+            ProductPrice = productPrice;
+            StockQuantity = stockQuantity;
+        }
+
+        public Product(string productName, int categoryId, double productPrice, int stockQuantity)
+        {
+            ProductName = productName;
+            CategoryId = categoryId;
+            ProductPrice = productPrice;
+            StockQuantity = stockQuantity;
         }
     }
 }

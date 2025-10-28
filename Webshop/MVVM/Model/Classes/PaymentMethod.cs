@@ -1,14 +1,19 @@
 ﻿namespace Webshop.MVVM.Model.Classes
 {
-    internal class PaymentMethod
+    public class PaymentMethod
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public int PaymentMethodId { get; set; }
+        public string PaymentMethodName { get; set; }
 
-        public PaymentMethod(int id, string name)
+        public PaymentMethod(int paymentMethodId, string paymentMethodName)
         {
-            Id = id;
-            Name = name;
+            PaymentMethodId = paymentMethodId;
+            PaymentMethodName = paymentMethodName;
+        }
+
+        public PaymentMethod(string paymentMethodName)
+        {
+            PaymentMethodName = paymentMethodName;
         }
     }
 }

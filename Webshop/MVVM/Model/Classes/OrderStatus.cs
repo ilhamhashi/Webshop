@@ -1,24 +1,19 @@
 ﻿namespace Webshop.MVVM.Model.Classes
-{
-    internal enum Status
-    {
-        Created,
-        Processing,
-        Packing,
-        UnderDelivery,
-        Delivered,
-        Cancelled        
-    }
-
-    internal class OrderStatus
+{ 
+    public class OrderStatus
     {
         public int OrderStatusID { get; set; }
-        public Status Status { get; set; }
+        public string OrderStatusName { get; set; }
 
-        public OrderStatus(int orderStatusID, Status status)
+        public OrderStatus(int orderStatusID, string orderStatusName)
         {
             OrderStatusID = orderStatusID;
-            Status = status;
+            OrderStatusName = orderStatusName;
+        }
+
+        public OrderStatus(string orderStatusName)
+        {
+            OrderStatusName = orderStatusName;
         }
     }
 }
