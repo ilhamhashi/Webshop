@@ -13,5 +13,27 @@
     
     <Grid>
 
+        <StackPanel>
+            <TextBlock Text="Din Indkøbskurv"/>
+            <ListBox ItemsSource="{Binding OrderItems}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0}, {1}">
+                                    <Binding Path="Price"/>
+                                    <Binding Path="Quantity"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            
+            <Button Content="Create Order" Command="{Binding CreateOrderCommand}"/>
+        
+        </StackPanel>
+
     </Grid>
+    
 </Window>
