@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Data.Common;
 using System.Windows.Controls;
 using Webshop.MVVM.Model.Classes;
 
@@ -7,19 +8,18 @@ namespace Webshop.MVVM.Model.Repositories
 {
     public class OrderRepository : IRepository<Order>
     {
-        private readonly string _connectionString;
+        private readonly SqlConnection _connection;
 
-        public OrderRepository(string connectionString)
+        public OrderRepository(SqlConnection connectionString)
         {
-            _connectionString = connectionString;
+            _connection = connectionString;
         }
 
         public IEnumerable<Order> GetAll()
         {
             var orders = new List<Order>();
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand("uspGetAllOrders", _connection))
             {
-                var command = new SqlCommand("uspGetAllOrders", connection);
                 command.CommandType = CommandType.StoredProcedure;
 
                 using (var reader = command.ExecuteReader())
@@ -43,9 +43,8 @@ namespace Webshop.MVVM.Model.Repositories
 
         public Order GetById(int id)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand("uspGetOrderById", _connection))
             {
-                var command = new SqlCommand("uspGetOrderById", connection);
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue("@OrderId", id);
 
@@ -70,9 +69,8 @@ namespace Webshop.MVVM.Model.Repositories
 
         public void Add(Order entity)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand("uspCreateOrder", _connection))
             {
-                SqlCommand command = new SqlCommand("uspCreateOrder", connection);
                 command.CommandType = CommandType.StoredProcedure;
 
                 command.Parameters.AddWithValue("@OrderDate", SqlDbType.DateTime2).Value = entity.OrderDate;
@@ -84,7 +82,6 @@ namespace Webshop.MVVM.Model.Repositories
                 SqlParameter orderIdParam = new SqlParameter("@OrderId", SqlDbType.Int) { Direction = ParameterDirection.Output };
                 command.Parameters.Add(orderIdParam);
 
-                connection.Open();
                 command.ExecuteNonQuery();
                 entity.OrderId = (int)orderIdParam.Value;
             }
@@ -92,9 +89,8 @@ namespace Webshop.MVVM.Model.Repositories
 
         public void Update(Order entity)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand("uspUpdateOrder", _connection))
             {
-                SqlCommand command = new SqlCommand("uspUpdateOrder", connection);
                 command.CommandType = CommandType.StoredProcedure;
 
                 command.Parameters.AddWithValue("@OrderId", SqlDbType.Int).Value = entity.OrderId;
@@ -104,21 +100,17 @@ namespace Webshop.MVVM.Model.Repositories
                 command.Parameters.AddWithValue("@OrderStatusId", SqlDbType.Int).Value = entity.OrderStatusId;
                 command.Parameters.AddWithValue("@PaymentMethodId", SqlDbType.Int).Value = entity.PaymentMethodId;
 
-                connection.Open();
                 command.ExecuteNonQuery();
             }
         }
 
         public void Delete(int id)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand("uspDeleteOrder", _connection))
             {
-                SqlCommand command = new SqlCommand("uspDeleteOrder", connection);
                 command.CommandType = CommandType.StoredProcedure;
-
                 command.Parameters.AddWithValue("@OrderId", SqlDbType.Int).Value = id;
 
-                connection.Open();
                 command.ExecuteNonQuery();
             }
         }

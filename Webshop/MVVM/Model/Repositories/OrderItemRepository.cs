@@ -6,18 +6,17 @@ namespace Webshop.MVVM.Model.Repositories
 {
     public class OrderItemRepository : IRepository<OrderItem>
     {
-        private readonly string _connectionString;
-        public OrderItemRepository(string connectionString)
+        private readonly SqlConnection _connection;
+        public OrderItemRepository(SqlConnection connectionString)
         {
-            _connectionString = connectionString;
+            _connection = connectionString;
         }
 
         public IEnumerable<OrderItem> GetAll()
         {
             var orderitems = new List<OrderItem>();
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand("uspGetAllOrderItems", _connection))
             {
-                var command = new SqlCommand("uspGetAllOrderItems", connection);
                 command.CommandType = CommandType.StoredProcedure;
 
                 using (var reader = command.ExecuteReader())
@@ -40,9 +39,8 @@ namespace Webshop.MVVM.Model.Repositories
 
         public OrderItem GetById(int id)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand("uspGetOrderItemById", _connection))
             {
-                var command = new SqlCommand("uspGetOrderItemById", connection);
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue("@ProductId", id);
 
@@ -66,9 +64,8 @@ namespace Webshop.MVVM.Model.Repositories
 
         public void Add(OrderItem entity)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand("uspCreateOrderItem", _connection))
             {
-                SqlCommand command = new SqlCommand("uspCreateOrderItem", connection);
                 command.CommandType = CommandType.StoredProcedure;
 
                 command.Parameters.AddWithValue("@OrderId", SqlDbType.Int).Value = entity.OrderId;
@@ -77,16 +74,14 @@ namespace Webshop.MVVM.Model.Repositories
                 command.Parameters.AddWithValue("@Price", SqlDbType.Decimal).Value = entity.Price;
                 command.Parameters.AddWithValue("@SelectedToCart", SqlDbType.Bit).Value = entity.SelectedToCart;
 
-                connection.Open();
                 command.ExecuteNonQuery();
             }
         }
 
         public void Update(OrderItem entity)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand("uspUpdateOrderItem", _connection))
             {
-                SqlCommand command = new SqlCommand("uspUpdateOrderItem", connection);
                 command.CommandType = CommandType.StoredProcedure;
 
                 command.Parameters.AddWithValue("@OrderId", SqlDbType.Int).Value = entity.OrderId;
@@ -95,21 +90,18 @@ namespace Webshop.MVVM.Model.Repositories
                 command.Parameters.AddWithValue("@Price", SqlDbType.Decimal).Value = entity.Price;
                 command.Parameters.AddWithValue("@SelectedToCart", SqlDbType.Bit).Value = entity.SelectedToCart;
 
-                connection.Open();
                 command.ExecuteNonQuery();
             }
         }
 
         public void Delete(int id)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand("uspDeleteOrderItem", _connection))
             {
-                SqlCommand command = new SqlCommand("uspDeleteOrderItem", connection);
                 command.CommandType = CommandType.StoredProcedure;
 
                 command.Parameters.AddWithValue("@ProductId", SqlDbType.Int).Value = id;
 
-                connection.Open();
                 command.ExecuteNonQuery();
             }
         }
