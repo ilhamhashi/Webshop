@@ -17,5 +17,12 @@
             SelectedToCart = selectedToCart;
         }
 
+        public OrderItem(int productId, int quantity, double price, bool selectedToCart)
+        {
+            ProductId = productId;
+            Quantity = quantity;
+            Price = price;
+            SelectedToCart = selectedToCart;
+        }
     }
 }
