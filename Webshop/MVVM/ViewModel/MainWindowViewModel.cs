@@ -1,42 +1,60 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Input;
 using Webshop.MVVM.Model.Classes;
 using Webshop.MVVM.Model.Repositories;
+using Webshop.Services;
 
 namespace Webshop.MVVM.ViewModel
 {
-    public class MainWindowViewModel
+    public class MainWindowViewModel : INotifyPropertyChanged
     {
+        private readonly IConfigurationRoot Config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+        private readonly IRepository<Order> _orderRepository;
+        private readonly IRepository<OrderItem> _orderItemRepository;
+        private readonly IRepository<Product> _productRepository;
+        private readonly SqlConnection _connection;
+        private readonly OrderService _orderService;
+        
+        public ObservableCollection<OrderItem> OrderItems { get; set; }
 
-        public static IConfigurationRoot Config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-        public IRepository<Customer> customerRepository = new CustomerRepository(Config.GetConnectionString("DefaultConnection"));
+        private Order newOrder;
+        public Order NewOrder
+        {
+            get { return newOrder; }
+            set { newOrder = value; }
+        }
 
+        public ICommand CreateOrderCommand { get; }
 
         public MainWindowViewModel()
         {
+            _connection = new SqlConnection(Config.GetConnectionString("DefaultConnection"));
+            _orderRepository = new OrderRepository(_connection);
+            _orderItemRepository = new OrderItemRepository(_connection);
+            _productRepository = new ProductRepository(_connection);
+            _orderService = new OrderService(_connection, _orderRepository, _orderItemRepository, _productRepository);
 
-            /*
-            // Adding a new customer
-            customerRepository.Add(new Customer("NyKundeNavn", "NyKundeTel", "NyKunde@gmail.com"));
+            NewOrder = new Order(DateTime.Now, 10, 1, 1, 1);
+            OrderItems = new ObservableCollection<OrderItem>();
 
-            //Getting all customers
-            var customers = customerRepository.GetAll();
-            foreach (var customer in customers)
-            {
-                MessageBox.Show($"{customer.Name}", "Navn", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+            OrderItem orderitem1 = new OrderItem(1, 2, 4999.99, true);
+            OrderItem orderitem2 = new OrderItem(2, 1, 3999.99, true);
 
-            //Updating a customer
-            var updatecustomer = customerRepository.GetById(4);
-            if (updatecustomer != null)
-            {
-                updatecustomer.PointBalance = 800;
-                customerRepository.Update(updatecustomer);
-            }
+            OrderItems.Add(orderitem1);
+            OrderItems.Add(orderitem2);
 
-            //Deleting a customer
-            customerRepository.Delete(1);
-
-            */
+            CreateOrderCommand = new RelayCommand(_ => _orderService.CreateOrder(NewOrder, OrderItems.ToList()), _ => true);
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
     }
 }
